@@ -32,16 +32,23 @@ The application processes images locally. There is no database or backend servic
 
 ## 3. Getting Started
 
-### Run a packaged application
+### Download and run
 
-A packaged build includes the Python runtime and application dependencies; users do not need to install Python separately.
+Download the build for your computer from [Releases](https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/latest). Python is included; no development environment or separate runtime installation is required.
 
-| Platform | Target artifact | Verification status |
-| --- | --- | --- |
-| macOS / Apple Silicon | `canned beer sprites.app` | Built locally and checked for startup outside the source directory |
-| Windows | `canned beer sprites.exe` | Single-file build target; not yet built or tested on Windows |
+| Your computer | Download |
+| --- | --- |
+| Windows 64-bit (Intel / AMD) | [Windows exe](https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0/canned-beer-sprites-v1.0-windows-x64.exe) |
+| Mac with Apple Silicon (M1 and newer) | [macOS arm64 zip](https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0/canned-beer-sprites-v1.0-macos-arm64.zip) |
+| Mac with Intel processor | [macOS x64 zip](https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0/canned-beer-sprites-v1.0-macos-x64.zip) |
 
-Public release downloads are not currently documented here. The macOS build has not been signed with a Developer ID or notarized for external distribution.
+**Windows:** download the exe and run it. No installer is needed.
+
+**macOS:** extract the zip, move **canned beer sprites.app** to Applications, and open it.
+
+Mac builds use ad-hoc signing and are not Developer ID signed or notarized. If macOS blocks the first launch, use **System Settings > Privacy & Security > Open Anyway** for this downloaded app. Windows may show an unknown publisher warning because the executable has no publisher certificate.
+
+The release pipeline builds each artifact on its target OS, runs the core tests, and checks packaged application startup. This does not replace full manual testing on every target computer. SHA-256 checksum files are included with the downloads.
 
 ### Run from source
 
@@ -145,28 +152,23 @@ Your engine or loader must support this XML structure or adapt it to its own for
 
 ### Build an executable
 
-Build on the target operating system. Do not copy a macOS virtual environment to Windows or vice versa. Activate the environment and install the project as described above before building. Packaging uses Nuitka and requires a working native compiler toolchain; on macOS, install the Xcode Command Line Tools if needed.
-
-No separate `main.py` is needed: `canned_beer/app.py` is the entry point.
-
-**macOS**
+Build on the target operating system, using Python 3.12. Do not copy virtual environments between operating systems. Install the project as described above, then install the build tools:
 
 ```sh
-source .venv/bin/activate
-pyside6-deploy -c pysidedeploy.spec --mode standalone -f
+python -m pip install Nuitka==4.1.1 ordered-set==4.1.0 zstandard==0.25.0
+python scripts/build.py
 ```
 
-Output: `dist/canned beer sprites.app`.
+On Windows, use `.\.venv\Scripts\python.exe` instead of `python` if the environment is not activated. Windows builds require Visual Studio C++ Build Tools; macOS builds require the Xcode Command Line Tools.
 
-**Windows PowerShell**
+No separate `main.py` is needed: `canned_beer/app.py` is the entry point. The script builds an executable, checks startup outside the source tree, and writes a release download plus SHA-256 checksum to `dist/release/`:
 
-```powershell
-.\.venv\Scripts\pyside6-deploy.exe -c pysidedeploy.spec --mode onefile -f
-```
+- Windows: a single `.exe` for x64.
+- macOS: a `.zip` containing an app bundle for the build machine's architecture.
 
-Expected output: `dist/canned beer sprites.exe`. This Windows build procedure has not yet been verified.
+Windows onefile packaging extracts its bundled dependencies to a temporary directory at startup. macOS uses an application bundle, which Finder presents as one app.
 
-The deployment tool installs its build dependencies on the first run. Windows onefile packaging extracts its bundled dependencies to a temporary directory at startup. macOS uses an application bundle, which Finder presents as one app.
+The GitHub Actions **Build release** workflow builds Windows x64, macOS arm64, and macOS x64. It can be run manually for validation. Pushing a version tag publishes a release only after every platform build and startup check succeeds.
 
 ## 5. Project Structure
 
@@ -178,7 +180,10 @@ canned_beer/
 tests/
   test_core.py        Naming, layout bounds, spacing, overflow, and XML tests
 pyproject.toml        Python package metadata and dependencies
-pysidedeploy.spec     Executable build configuration
+pysidedeploy.spec     Alternative pyside6-deploy configuration
+scripts/build.py     Native build, startup check, and release packaging
+.github/workflows/
+  release.yml        Cross-platform build and GitHub Release publishing
 README.md
 ```
 

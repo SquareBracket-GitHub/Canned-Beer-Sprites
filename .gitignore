@@ -8,3 +8,4 @@ deployment/
 *.build/
 *.dist/
 *.app/
+.DS_Store

@@ -1,0 +1,78 @@
+name: Build release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows x64
+            os: windows-latest
+          - name: macOS Apple Silicon
+            os: macos-15
+          - name: macOS Intel
+            os: macos-15-intel
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install application and build tools
+        run: python -m pip install -e . Nuitka==4.1.1 ordered-set==4.1.0 zstandard==0.25.0
+      - name: Test
+        run: python -m unittest discover -s tests -v
+      - name: Build and verify executable
+        run: python scripts/build.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.os }}
+          path: dist/release/*
+          if-no-files-found: error
+
+  publish:
+    name: Publish release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          path: release
+          merge-multiple: true
+      - name: Publish all verified artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          cat > notes.md <<'NOTES'
+          Pack images into a transparent PNG sprite sheet and matching XML. No Python installation is required.
+
+          | Your computer | Download |
+          | --- | --- |
+          | Windows 64-bit (Intel / AMD) | `canned-beer-sprites-v1.0-windows-x64.exe` |
+          | Mac with Apple Silicon (M1 and newer) | `canned-beer-sprites-v1.0-macos-arm64.zip` |
+          | Mac with Intel processor | `canned-beer-sprites-v1.0-macos-x64.zip` |
+
+          **Windows:** download the exe and run it. No installer is required.
+          **macOS:** extract the zip, move the app to Applications, and open it. Mac builds use ad-hoc signing and are not Developer ID signed or notarized. If macOS blocks the first launch, use System Settings > Privacy & Security > Open Anyway for this downloaded app. Windows may also show an unknown publisher warning because the exe has no publisher certificate.
+
+          Features: file/folder import, reordering, Rows / Uniform grid / Compact layouts, automatic or manual sheet dimensions, spacing, live sheet/XML preview, and PNG + XML export. Duplicate names are numbered. Source images retain their dimensions and transparency.
+
+          Each executable was built on its target OS and checked for application startup; full manual testing on every target computer is not claimed. SHA-256 checksums are supplied alongside the downloads.
+          NOTES
+          gh release create "$RELEASE_TAG" release/* --verify-tag --title "canned beer sprites $RELEASE_TAG" --notes-file notes.md

@@ -248,6 +248,8 @@ def main():
     app.setApplicationName("canned beer sprites")
     window = Window()
     window.show()
+    if "--smoke-test" in sys.argv:
+        QTimer.singleShot(1000, app.quit)
     sys.exit(app.exec())
 
 
