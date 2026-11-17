@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QLineEdit, QListWidget, QListWidgetItem, QMainWindow, QMessageBox,
     QPushButton, QPlainTextEdit, QSpinBox, QSplitter, QVBoxLayout, QWidget,
 )
-from .core import Sprite, layout, xml_text
+from canned_beer.core import Sprite, layout, xml_text
 
 
 class Window(QMainWindow):
