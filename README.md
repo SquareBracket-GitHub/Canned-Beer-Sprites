@@ -38,9 +38,9 @@ Download the build for your computer from [Releases](https://github.com/SquareBr
 
 | Your computer | Download |
 | --- | --- |
-| Windows 64-bit (Intel / AMD) | [Windows exe](https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0/canned-beer-sprites-v1.0-windows-x64.exe) |
-| Mac with Apple Silicon (M1 and newer) | [macOS arm64 zip](https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0/canned-beer-sprites-v1.0-macos-arm64.zip) |
-| Mac with Intel processor | [macOS x64 zip](https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0/canned-beer-sprites-v1.0-macos-x64.zip) |
+| Windows 64-bit (Intel / AMD) | [Windows exe](https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0.0/canned-beer-sprites-v1.0.0-windows-x64.exe) |
+| Mac with Apple Silicon (M1 and newer) | [macOS arm64 zip](https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0.0/canned-beer-sprites-v1.0.0-macos-arm64.zip) |
+| Mac with Intel processor | [macOS x64 zip](https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0.0/canned-beer-sprites-v1.0.0-macos-x64.zip) |
 
 **Windows:** download the exe and run it. No installer is needed.
 
