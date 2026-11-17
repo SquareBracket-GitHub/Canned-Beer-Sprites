@@ -83,11 +83,11 @@ def _pack(sprites, width, height, gap, mode):
 
 def layout(sprites, mode="rows", gap=0, size=None):
     if not sprites:
-        raise ValueError("이미지를 추가해주세요.")
+        raise ValueError("Add images to get started.")
     if mode not in {"rows", "grid", "compact"} or gap < 0:
-        raise ValueError("잘못된 배치 설정입니다.")
+        raise ValueError("Invalid layout settings.")
     if any(s.width <= 0 or s.height <= 0 for s in sprites):
-        raise ValueError("이미지 크기가 올바르지 않습니다.")
+        raise ValueError("Invalid image dimensions.")
     if size:
         width,height = size
         positions = _pack(sprites,width,height,gap,mode)
@@ -107,9 +107,9 @@ def layout(sprites, mode="rows", gap=0, size=None):
             width = max(positions[i][0]+s.width for i,s in enumerate(sprites))
             height = max(positions[i][1]+s.height for i,s in enumerate(sprites))
     if positions is None:
-        raise ValueError("이미지가 한 장에 모두 들어가지 않습니다. 시트 크기를 늘려주세요.")
+        raise ValueError("Images do not fit on one sheet. Increase the sheet size.")
     if width < 1 or height < 1 or width > 16384 or height > 16384 or width*height > 64*1024*1024:
-        raise ValueError("시트는 한 변 16,384px, 총 64메가픽셀 이내로 지정해주세요.")
+        raise ValueError("Sheet size must be within 16,384px per side and 64 megapixels total.")
     names = unique_names(sprites)
     return width,height,[Placement(s,names[i],*positions[i]) for i,s in enumerate(sprites)]
 

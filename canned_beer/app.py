@@ -28,9 +28,9 @@ class Window(QMainWindow):
         self.setCentralWidget(split)
         left = QWidget()
         lv = QVBoxLayout(left)
-        lv.addWidget(QLabel("이미지"))
+        lv.addWidget(QLabel("Images"))
         buttons = QHBoxLayout()
-        for title, action in [("파일 추가", self.add_files), ("폴더 추가", self.add_folder)]:
+        for title, action in [("Add files", self.add_files), ("Add folder", self.add_folder)]:
             button = QPushButton(title)
             button.clicked.connect(action)
             buttons.addWidget(button)
@@ -40,13 +40,13 @@ class Window(QMainWindow):
         self.items.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
         self.items.model().rowsMoved.connect(self.schedule)
         lv.addWidget(self.items)
-        remove = QPushButton("선택 삭제")
+        remove = QPushButton("Remove selected")
         remove.clicked.connect(self.remove_selected)
         lv.addWidget(remove)
         split.addWidget(left)
         center = QWidget()
         cv = QVBoxLayout(center)
-        cv.addWidget(QLabel("시트 미리보기 · 파일 또는 폴더를 창에 놓으세요"))
+        cv.addWidget(QLabel("Sheet preview - Drop files or folders here"))
         self.scene = QGraphicsScene(self)
         self.view = QGraphicsView(self.scene)
         self.view.setBackgroundBrush(QColor("#34383d"))
@@ -58,25 +58,30 @@ class Window(QMainWindow):
         right = QWidget()
         form = QFormLayout(right)
         self.mode = QComboBox()
-        self.mode.addItems(["가로 순서대로", "동일 크기 격자", "빈 공간 최소화"])
-        form.addRow("배치", self.mode)
-        self.auto = QCheckBox("자동 결정")
+        self.mode.addItems(["Rows", "Uniform grid", "Compact"])
+        form.addRow("Layout", self.mode)
+        self.auto = QCheckBox("Automatic")
         self.auto.setChecked(True)
-        form.addRow("시트 크기", self.auto)
+        form.addRow("Sheet size", self.auto)
         self.width = self.spin(1, 16384, 1024)
         self.height = self.spin(1, 16384, 1024)
         self.width.setEnabled(False)
         self.height.setEnabled(False)
-        form.addRow("가로 px", self.width)
-        form.addRow("세로 px", self.height)
+        form.addRow("Width (px)", self.width)
+        form.addRow("Height (px)", self.height)
         self.gap = self.spin(0, 256, 0)
-        form.addRow("간격 px", self.gap)
+        form.addRow("Spacing (px)", self.gap)
         self.name = QLineEdit("spritesheet")
-        form.addRow("출력 이름", self.name)
-        self.export_button = QPushButton("PNG + XML 내보내기")
+        form.addRow("Output name", self.name)
+        self.export_button = QPushButton("Generate PNG + XML")
         self.export_button.clicked.connect(self.export)
         form.addRow(self.export_button)
-        hint = QLabel("원본 크기와 투명도 유지\n회전·자르기 없음\n한 장을 초과하면 크기 변경 안내")
+        self.warning = QLabel()
+        self.warning.setWordWrap(True)
+        self.warning.setStyleSheet("color: #e53935;")
+        self.warning.hide()
+        form.addRow(self.warning)
+        hint = QLabel("Original size and transparency\nNo rotation or cropping\nIncrease sheet size if images do not fit")
         hint.setWordWrap(True)
         form.addRow(hint)
         split.addWidget(right)
@@ -104,11 +109,11 @@ class Window(QMainWindow):
         self.schedule()
 
     def add_files(self):
-        files, _ = QFileDialog.getOpenFileNames(self, "이미지 추가", "", "Images (*.png *.jpg *.jpeg *.bmp *.webp *.gif *.tif *.tiff)")
+        files, _ = QFileDialog.getOpenFileNames(self, "Add images", "", "Images (*.png *.jpg *.jpeg *.bmp *.webp *.gif *.tif *.tiff)")
         self.add_paths(files)
 
     def add_folder(self):
-        folder = QFileDialog.getExistingDirectory(self, "이미지 폴더 선택")
+        folder = QFileDialog.getExistingDirectory(self, "Select image folder")
         if folder:
             self.add_paths([folder])
 
@@ -136,7 +141,7 @@ class Window(QMainWindow):
             self.items.addItem(item)
         self.refresh()
         if errors:
-            QMessageBox.warning(self, "읽기 실패", "다음 파일을 읽을 수 없습니다:\n" + "\n".join(errors[:20]))
+            self.show_warning("Cannot read these files:\n" + "\n".join(errors[:20]))
 
     def remove_selected(self):
         for item in self.items.selectedItems():
@@ -155,7 +160,7 @@ class Window(QMainWindow):
     def output_name(self):
         name = self.name.text().strip()
         if not name or name in {".", ".."} or any(c in name for c in '<>:"/\\|?*') or name.endswith('.'):
-            raise ValueError("출력 이름에 유효한 파일명을 입력해주세요.")
+            raise ValueError("Enter a valid output filename.")
         return name
 
     def refresh(self):
@@ -164,6 +169,11 @@ class Window(QMainWindow):
         self.scene.clear()
         self.xml.clear()
         self.export_button.setEnabled(False)
+        self.warning.clear()
+        self.warning.hide()
+        if not self.items.count():
+            self.statusBar().showMessage("Add images to get started.")
+            return
         try:
             name = self.output_name()
             sprites = []
@@ -175,7 +185,7 @@ class Window(QMainWindow):
             w,h,placements = layout(sprites, ["rows", "grid", "compact"][self.mode.currentIndex()], self.gap.value(), size)
             atlas = QImage(w,h,QImage.Format.Format_ARGB32)
             if atlas.isNull():
-                raise ValueError("시트 메모리를 확보하지 못했습니다. 크기를 줄여주세요.")
+                raise ValueError("Cannot allocate sheet memory. Reduce its size.")
             atlas.fill(Qt.GlobalColor.transparent)
             painter = QPainter(atlas)
             for p in placements:
@@ -187,10 +197,15 @@ class Window(QMainWindow):
             self.scene.addPixmap(QPixmap.fromImage(atlas))
             self.scene.setSceneRect(0,0,w,h)
             self.view.fitInView(self.scene.sceneRect(),Qt.AspectRatioMode.KeepAspectRatio)
-            self.statusBar().showMessage(f"{len(sprites)}개 이미지 · {w} × {h}px")
+            self.statusBar().showMessage(f"{len(sprites)} images - {w} x {h}px")
             self.export_button.setEnabled(True)
         except ValueError as error:
-            self.statusBar().showMessage(str(error))
+            self.show_warning(str(error))
+
+    def show_warning(self, message):
+        self.warning.setText(message)
+        self.warning.show()
+        self.statusBar().showMessage(message)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -201,21 +216,22 @@ class Window(QMainWindow):
         self.refresh()
         if self.atlas is None:
             return
-        folder = QFileDialog.getExistingDirectory(self, "PNG와 XML을 저장할 폴더")
+        folder = QFileDialog.getExistingDirectory(self, "Select output folder")
         if not folder:
             return
         base = Path(folder) / self.output_name()
         png = base.with_name(base.name+".png")
         xml = base.with_name(base.name+".xml")
-        if (png.exists() or xml.exists()) and QMessageBox.question(self, "덮어쓰기", "같은 이름의 출력 파일이 있습니다. 덮어쓸까요?") != QMessageBox.StandardButton.Yes:
+        if (png.exists() or xml.exists()) and QMessageBox.question(self, "Overwrite files", "Output files already exist. Overwrite them?") != QMessageBox.StandardButton.Yes:
             return
         try:
             if not self.atlas.save(str(png), "PNG"):
-                raise OSError("PNG 저장에 실패했습니다.")
+                raise OSError("Failed to save PNG.")
             xml.write_text(self.xml.toPlainText(), encoding="utf-8")
-            self.statusBar().showMessage(f"저장 완료: {png.name}, {xml.name}")
+            self.statusBar().showMessage(f"Saved: {png.name}, {xml.name}")
+            QMessageBox.information(self, "canned beer", "well seamed!")
         except OSError as error:
-            QMessageBox.warning(self,"저장 실패",str(error))
+            self.show_warning(f"Save failed: {error}")
 
 
 def main():
