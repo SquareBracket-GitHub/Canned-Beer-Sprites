@@ -15,7 +15,7 @@ from .core import Sprite, layout, xml_text
 class Window(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("canned beer")
+        self.setWindowTitle("canned beer sprites")
         self.resize(1200, 760)
         self.setAcceptDrops(True)
         self.images = {}
@@ -46,10 +46,16 @@ class Window(QMainWindow):
         split.addWidget(left)
         center = QWidget()
         cv = QVBoxLayout(center)
-        cv.addWidget(QLabel("Sheet preview - Drop files or folders here"))
+        cv.addWidget(QLabel("Sheet Preview"))
         self.scene = QGraphicsScene(self)
         self.view = QGraphicsView(self.scene)
         self.view.setBackgroundBrush(QColor("#34383d"))
+        empty_layout = QVBoxLayout(self.view.viewport())
+        self.empty_hint = QLabel("Drop files or folders here")
+        self.empty_hint.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.empty_hint.setStyleSheet("color: #b8bcc2; background: transparent;")
+        self.empty_hint.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        empty_layout.addWidget(self.empty_hint)
         cv.addWidget(self.view, 3)
         self.xml = QPlainTextEdit()
         self.xml.setReadOnly(True)
@@ -67,13 +73,13 @@ class Window(QMainWindow):
         self.height = self.spin(1, 16384, 1024)
         self.width.setEnabled(False)
         self.height.setEnabled(False)
-        form.addRow("Width (px)", self.width)
-        form.addRow("Height (px)", self.height)
+        form.addRow("Width", self.with_unit(self.width))
+        form.addRow("Height", self.with_unit(self.height))
         self.gap = self.spin(0, 256, 0)
-        form.addRow("Spacing (px)", self.gap)
+        form.addRow("Spacing", self.with_unit(self.gap))
         self.name = QLineEdit("spritesheet")
         form.addRow("Output name", self.name)
-        self.export_button = QPushButton("Generate PNG + XML")
+        self.export_button = QPushButton("Generate")
         self.export_button.clicked.connect(self.export)
         form.addRow(self.export_button)
         self.warning = QLabel()
@@ -81,9 +87,6 @@ class Window(QMainWindow):
         self.warning.setStyleSheet("color: #e53935;")
         self.warning.hide()
         form.addRow(self.warning)
-        hint = QLabel("Original size and transparency\nNo rotation or cropping\nIncrease sheet size if images do not fit")
-        hint.setWordWrap(True)
-        form.addRow(hint)
         split.addWidget(right)
         split.setSizes([250, 650, 300])
         self.mode.currentIndexChanged.connect(self.schedule)
@@ -92,6 +95,15 @@ class Window(QMainWindow):
             spin.valueChanged.connect(self.schedule)
         self.name.textChanged.connect(self.schedule)
         self.refresh()
+
+    @staticmethod
+    def with_unit(spin):
+        row = QWidget()
+        layout = QHBoxLayout(row)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(spin, 1)
+        layout.addWidget(QLabel("px"))
+        return row
 
     @staticmethod
     def spin(low, high, value):
@@ -171,8 +183,8 @@ class Window(QMainWindow):
         self.export_button.setEnabled(False)
         self.warning.clear()
         self.warning.hide()
+        self.empty_hint.setVisible(self.items.count() == 0)
         if not self.items.count():
-            self.statusBar().showMessage("Add images to get started.")
             return
         try:
             name = self.output_name()
@@ -197,7 +209,6 @@ class Window(QMainWindow):
             self.scene.addPixmap(QPixmap.fromImage(atlas))
             self.scene.setSceneRect(0,0,w,h)
             self.view.fitInView(self.scene.sceneRect(),Qt.AspectRatioMode.KeepAspectRatio)
-            self.statusBar().showMessage(f"{len(sprites)} images - {w} x {h}px")
             self.export_button.setEnabled(True)
         except ValueError as error:
             self.show_warning(str(error))
@@ -205,7 +216,6 @@ class Window(QMainWindow):
     def show_warning(self, message):
         self.warning.setText(message)
         self.warning.show()
-        self.statusBar().showMessage(message)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -228,15 +238,14 @@ class Window(QMainWindow):
             if not self.atlas.save(str(png), "PNG"):
                 raise OSError("Failed to save PNG.")
             xml.write_text(self.xml.toPlainText(), encoding="utf-8")
-            self.statusBar().showMessage(f"Saved: {png.name}, {xml.name}")
-            QMessageBox.information(self, "canned beer", "well seamed!")
+            QMessageBox.information(self, "canned beer sprites", "well seamed!")
         except OSError as error:
             self.show_warning(f"Save failed: {error}")
 
 
 def main():
     app = QApplication(sys.argv)
-    app.setApplicationName("canned beer")
+    app.setApplicationName("canned beer sprites")
     window = Window()
     window.show()
     sys.exit(app.exec())
