@@ -38,19 +38,16 @@ class UiTests(unittest.TestCase):
 
     def test_background_rendering_and_screen_pixel_tile_size(self):
         view = self.window.view
-        for index, size in enumerate((8, 16, 32)):
-            self.window.checker_size.setCurrentIndex(index)
-            for zoom in (0.5, 3):
-                view.resetTransform()
-                view.scale(zoom, zoom)
-                image = view.viewport().grab().toImage()
-                self.assertEqual(image.pixelColor(2, 2).name().lower(), COLORS['checker_light'].lower())
-                self.assertEqual(image.pixelColor(size + 2, 2).name().lower(), COLORS['checker_dark'].lower())
+        for zoom in (0.5, 3):
+            view.resetTransform()
+            view.scale(zoom, zoom)
+            image = view.viewport().grab().toImage()
+            self.assertEqual(image.pixelColor(2, 2).name().lower(), COLORS['checker_light'].lower())
+            self.assertEqual(image.pixelColor(18, 2).name().lower(), COLORS['checker_dark'].lower())
         for mode, token in (('Dark Slate', 'dark_slate'), ('Light Slate', 'light_slate')):
             self.window.preview_background.setCurrentText(mode)
             image = view.viewport().grab().toImage()
             self.assertEqual(image.pixelColor(2, 2).name().lower(), COLORS[token].lower())
-            self.assertFalse(self.window.checker_size.isEnabled())
 
     def test_preview_modes_do_not_change_exported_png_or_xml(self):
         window = self.window
@@ -65,22 +62,20 @@ class UiTests(unittest.TestCase):
             reference = None
             for bg in ('Checkerboard', 'Dark Slate', 'Light Slate'):
                 window.preview_background.setCurrentText(bg)
-                for tile in range(3):
-                    window.checker_size.setCurrentIndex(tile)
-                    window.view.viewport().grab()  # Exercise background painting before export.
-                    output = self.root / f'{mode}-{bg}-{tile}'
-                    output.mkdir()
-                    with patch('canned_beer.app.QFileDialog.getExistingDirectory', return_value=str(output)), \
-                         patch('canned_beer.app.QMessageBox.information'):
-                        window.export()
-                    result = QImage(str(output / 'spritesheet.png'))
-                    self.assertEqual(result.pixelColor(63, 63).alpha(), 0)
-                    self.assertEqual(result.pixelColor(2, 3), QColor(200, 100, 80, 128))
-                    self.assertEqual(result.pixelColor(3, 4), QColor(40, 120, 160, 255))
-                    if reference is None:
-                        reference = result
-                    self.assertEqual(result, reference)
-                    self.assertEqual((output / 'spritesheet.xml').read_text(encoding='utf-8'), expected_xml)
+                window.view.viewport().grab()  # Exercise background painting before export.
+                output = self.root / f'{mode}-{bg}'
+                output.mkdir()
+                with patch('canned_beer.app.QFileDialog.getExistingDirectory', return_value=str(output)), \
+                     patch('canned_beer.app.QMessageBox.information'):
+                    window.export()
+                result = QImage(str(output / 'spritesheet.png'))
+                self.assertEqual(result.pixelColor(63, 63).alpha(), 0)
+                self.assertEqual(result.pixelColor(2, 3), QColor(200, 100, 80, 128))
+                self.assertEqual(result.pixelColor(3, 4), QColor(40, 120, 160, 255))
+                if reference is None:
+                    reference = result
+                self.assertEqual(result, reference)
+                self.assertEqual((output / 'spritesheet.xml').read_text(encoding='utf-8'), expected_xml)
 
     def test_copy_xml_and_invalid_output_states(self):
         window = self.window

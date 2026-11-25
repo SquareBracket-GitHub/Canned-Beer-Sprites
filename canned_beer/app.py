@@ -78,14 +78,6 @@ class Window(QMainWindow):
         self.preview_background.setAccessibleName("Preview background")
         self.preview_background.setToolTip("Preview only; never included in the exported PNG.")
         preview_controls.addWidget(self.preview_background, 1)
-        self.checker_label = QLabel("Tile")
-        self.checker_label.setObjectName("secondaryLabel")
-        preview_controls.addWidget(self.checker_label)
-        self.checker_size = QComboBox()
-        self.checker_size.addItems(["8 px", "16 px", "32 px"])
-        self.checker_size.setCurrentIndex(1)
-        self.checker_size.setAccessibleName("Checkerboard tile size")
-        preview_controls.addWidget(self.checker_size)
         cv.addLayout(preview_controls)
         self.scene = QGraphicsScene(self)
         self.view = PreviewView(self.scene)
@@ -114,7 +106,6 @@ class Window(QMainWindow):
         self.copy_xml.setEnabled(False)
         cv.addWidget(self.xml, 1)
         self.preview_background.currentTextChanged.connect(self.update_preview_background)
-        self.checker_size.currentIndexChanged.connect(self.update_preview_background)
         split.addWidget(center)
         right = QWidget()
         right.setObjectName("settingsPanel")
@@ -188,11 +179,7 @@ class Window(QMainWindow):
         return label
 
     def update_preview_background(self, *_):
-        mode = self.preview_background.currentText()
-        checker = mode == "Checkerboard"
-        self.checker_size.setEnabled(checker)
-        self.checker_label.setEnabled(checker)
-        self.view.set_background(mode, (8, 16, 32)[self.checker_size.currentIndex()])
+        self.view.set_background(self.preview_background.currentText())
 
     def copy_xml_output(self):
         QApplication.clipboard().setText(self.xml.toPlainText())

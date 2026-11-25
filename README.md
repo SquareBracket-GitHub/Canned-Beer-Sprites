@@ -19,7 +19,7 @@ No account, server, API key, or Photoshop installation is required. The interfac
 - **Set spacing** between images in pixels.
 - **Preview the sheet and XML** as the image list or settings change.
 - **Work in a Frosted Navy / Winter Slate interface** with distinct panels, muted ice-blue accents, square-cornered controls, and grouped Layout, Canvas, and Output settings.
-- **Inspect transparency** on Checkerboard (default), Dark Slate, or Light Slate preview backgrounds. Checkerboard tiles can be 8, 16, or 32 screen pixels.
+- **Inspect transparency** on Checkerboard (default), Dark Slate, or Light Slate preview backgrounds. Checkerboard tiles are fixed at 16 screen pixels.
 - **Copy XML** to the clipboard from the XML Output panel, with subtle syntax highlighting.
 - **Export PNG + XML together**, with original image dimensions and transparency preserved.
 - **Name sprites automatically** from filenames without extensions, adding numbers for duplicates.
@@ -104,7 +104,7 @@ spritesheet.xml
 
 If either output file already exists, the application asks before overwriting it. Original source images are not modified.
 
-Use **Background** above Sheet Preview to switch between Checkerboard, Dark Slate, and Light Slate. **Tile** adjusts checkerboard squares independently of image zoom. These backgrounds appear only in the preview: exported PNG transparency and XML coordinates are unchanged. **Copy XML** copies exactly the text in XML Output and becomes available when valid XML is generated.
+Use **Background** above Sheet Preview to switch between Checkerboard, Dark Slate, and Light Slate. Checkerboard squares stay at 16 screen pixels independently of image zoom. These backgrounds appear only in the preview: exported PNG transparency and XML coordinates are unchanged. **Copy XML** copies exactly the text in XML Output and becomes available when valid XML is generated.
 
 ### Layouts
 

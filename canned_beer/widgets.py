@@ -10,12 +10,10 @@ class PreviewView(QGraphicsView):
     def __init__(self, scene):
         super().__init__(scene)
         self.background_mode = "Checkerboard"
-        self.checker_size = 16
         self.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
 
-    def set_background(self, mode, size):
+    def set_background(self, mode):
         self.background_mode = mode
-        self.checker_size = size
         self.viewport().update()
 
     def drawBackground(self, painter, rect):
@@ -23,7 +21,7 @@ class PreviewView(QGraphicsView):
         painter.save()
         painter.resetTransform()
         if self.background_mode == "Checkerboard":
-            size = self.checker_size
+            size = 16
             tile = QPixmap(size * 2, size * 2)
             tile.fill(QColor(COLORS['checker_dark']))
             tile_painter = QPainter(tile)
