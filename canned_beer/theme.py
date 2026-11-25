@@ -1,110 +1,115 @@
-"""Shared navy and indigo colors for widgets and Qt dialogs."""
+"""Frosted Navy / Winter Slate design tokens and shared widget styles."""
 from pathlib import Path
-
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QPalette
 
+COLORS = {
+    'background': '#111927', 'left': '#151F2E', 'center': '#192536',
+    'xml': '#101827', 'control': '#202D40', 'border': '#34445A',
+    'text': '#E1E8F0', 'muted': '#9AAABD', 'accent': '#8EADC9',
+    'selected': '#3D556D', 'hover': '#2C3D53', 'disabled': '#6F8197',
+    'checker_light': '#42546A', 'checker_dark': '#34445A',
+    'dark_slate': '#253345', 'light_slate': '#B8C4D0',
+}
+
 
 def apply_theme(app):
-    app.setStyle("Fusion")
+    app.setStyle('Fusion')
     app.styleHints().setColorScheme(Qt.ColorScheme.Dark)
     palette = QPalette()
-    colors = {
-        QPalette.ColorRole.Window: "#11182c",
-        QPalette.ColorRole.WindowText: "#e8edff",
-        QPalette.ColorRole.Base: "#0b1120",
-        QPalette.ColorRole.AlternateBase: "#18223b",
-        QPalette.ColorRole.Text: "#e8edff",
-        QPalette.ColorRole.Button: "#253454",
-        QPalette.ColorRole.ButtonText: "#e8edff",
-        QPalette.ColorRole.Highlight: "#545dcc",
-        QPalette.ColorRole.HighlightedText: "#ffffff",
-        QPalette.ColorRole.ToolTipBase: "#263454",
-        QPalette.ColorRole.ToolTipText: "#e8edff",
-        QPalette.ColorRole.Link: "#a5b4fc",
-        QPalette.ColorRole.PlaceholderText: "#9aa9c9",
-        QPalette.ColorRole.Light: "#405179",
-        QPalette.ColorRole.Midlight: "#30405f",
-        QPalette.ColorRole.Mid: "#263454",
-        QPalette.ColorRole.Dark: "#080e1b",
-        QPalette.ColorRole.Shadow: "#080e1b",
-    }
-    for role, color in colors.items():
-        palette.setColor(role, QColor(color))
+    for role, token in {
+        'Window': 'background', 'WindowText': 'text', 'Base': 'xml',
+        'AlternateBase': 'center', 'Text': 'text', 'Button': 'control',
+        'ButtonText': 'text', 'Highlight': 'selected', 'HighlightedText': 'text',
+        'ToolTipBase': 'control', 'ToolTipText': 'text', 'Link': 'accent',
+        'PlaceholderText': 'muted', 'Light': 'border', 'Midlight': 'hover',
+        'Mid': 'border', 'Dark': 'xml', 'Shadow': 'xml',
+    }.items():
+        palette.setColor(getattr(QPalette.ColorRole, role), QColor(COLORS[token]))
     for role in (QPalette.ColorRole.WindowText, QPalette.ColorRole.Text,
                  QPalette.ColorRole.ButtonText):
-        palette.setColor(QPalette.ColorGroup.Disabled, role, QColor("#7887a8"))
+        palette.setColor(QPalette.ColorGroup.Disabled, role, QColor(COLORS['disabled']))
     app.setPalette(palette)
-    resources = (Path(__file__).resolve().parent / "resources").as_posix()
-    app.setStyleSheet("""
+    styles = """
         QWidget { font-size: 13px; }
+        QMainWindow { background: @background@; }
+        QWidget#imagesPanel { background: @left@; }
+        QWidget#workspacePanel { background: @center@; }
+        QWidget#settingsPanel { background: @left@; }
         QLabel { background: transparent; }
-        QLabel#sectionHeading { color: #b9c6ed; font-weight: 600; }
+        QLabel#sectionHeading { color: @text@; font-weight: 600; font-size: 14px; }
+        QLabel#secondaryLabel { color: @muted@; }
+        QLabel#warningLabel { color: #D9A6AA; }
+        QGroupBox {
+            border: none; border-top: 1px solid @border@;
+            margin-top: 12px; padding-top: 6px; font-weight: 600;
+        }
+        QGroupBox::title { subcontrol-origin: margin; left: 0; color: @accent@; }
         QListWidget, QPlainTextEdit, QGraphicsView {
-            background: #0b1120; border: 1px solid #2b395b;
-            border-radius: 8px; selection-background-color: #424e9f;
-            selection-color: #ffffff;
+            border: 1px solid @border@; border-radius: 6px;
+            selection-background-color: @selected@; selection-color: @text@;
         }
-        QListWidget { padding: 5px; }
-        QListWidget::item { padding: 8px 6px; border-radius: 4px; }
-        QListWidget::item:hover { background: #202d4c; }
-        QListWidget::item:selected { background: #424e9f; color: #ffffff; }
-        QPlainTextEdit { padding: 8px; font-family: Consolas, monospace; }
+        QListWidget { background: @left@; padding: 4px; }
+        QListWidget::item { border-radius: 4px; }
+        QListWidget::item:hover { background: @hover@; }
+        QListWidget::item:selected { background: @selected@; }
+        QPlainTextEdit { background: @xml@; padding: 10px; font-family: Consolas, monospace; }
         QLineEdit, QSpinBox, QComboBox {
-            background: #18223b; color: #e8edff;
-            border: 1px solid #354568; border-radius: 5px;
+            background: @control@; color: @text@;
+            border: 1px solid @border@; border-radius: 5px;
             padding: 6px; min-height: 20px;
-            selection-background-color: #545dcc;
+            selection-background-color: @selected@;
         }
-        QLineEdit:focus, QSpinBox:focus, QComboBox:focus { border-color: #9aa5ff; }
+        QLineEdit:focus, QSpinBox:focus, QComboBox:focus { border-color: @accent@; }
         QLineEdit:disabled, QSpinBox:disabled {
-            background: #141c30; color: #7887a8; border-color: #263454;
+            background: @center@; color: @disabled@;
         }
         QComboBox QAbstractItemView {
-            background: #18223b; color: #e8edff;
-            selection-background-color: #424e9f; outline: none;
+            background: @control@; color: @text@;
+            selection-background-color: @selected@; outline: none;
         }
         QSpinBox { padding-right: 22px; }
-        QSpinBox::up-button, QSpinBox::down-button {
-            width: 20px; background: #253454; border: none;
-        }
+        QSpinBox::up-button, QSpinBox::down-button { width: 20px; background: @control@; border: none; }
         QSpinBox::up-button { subcontrol-origin: border; subcontrol-position: top right; }
         QSpinBox::down-button { subcontrol-origin: border; subcontrol-position: bottom right; }
-        QSpinBox::up-button:hover, QSpinBox::down-button:hover { background: #405179; }
-        QSpinBox::up-button:disabled, QSpinBox::down-button:disabled { background: #141c30; }
+        QSpinBox::up-button:hover, QSpinBox::down-button:hover { background: @hover@; }
+        QSpinBox::up-button:disabled, QSpinBox::down-button:disabled { background: @center@; }
         QSpinBox::up-arrow { image: url("@RESOURCES@/chevron-up.svg"); width: 10px; height: 6px; }
         QSpinBox::down-arrow { image: url("@RESOURCES@/chevron-down.svg"); width: 10px; height: 6px; }
         QComboBox { padding-right: 24px; }
         QComboBox::drop-down { width: 22px; border: none; }
         QComboBox::down-arrow { image: url("@RESOURCES@/chevron-down.svg"); width: 10px; height: 6px; }
         QPushButton {
-            background: #253454; color: #e8edff;
-            border: 1px solid #405179; border-radius: 6px;
-            padding: 8px 10px; min-height: 18px;
+            background: @control@; color: @text@; border: 1px solid @border@;
+            border-radius: 5px; padding: 8px 10px; min-height: 18px;
         }
-        QPushButton:hover { background: #304268; border-color: #7888bd; }
-        QPushButton:pressed { background: #1b2844; }
-        QPushButton:focus { border-color: #a5b4fc; }
+        QPushButton:hover { background: @hover@; border-color: @muted@; }
+        QPushButton:pressed { background: @selected@; }
+        QPushButton:focus { border-color: @accent@; }
         QPushButton#generateButton {
-            background: #545dcc; border-color: #7d86ee;
-            color: #ffffff; font-weight: 600;
+            background: @accent@; border-color: @accent@;
+            color: @background@; font-weight: 600;
         }
-        QPushButton#generateButton:hover { background: #636de0; }
-        QPushButton#generateButton:pressed { background: #454eae; }
+        QPushButton#generateButton:hover { background: #A1BCD3; }
+        QPushButton#generateButton:pressed { background: #7B9BB7; }
         QPushButton:disabled, QPushButton#generateButton:disabled {
-            background: #202b46; border-color: #2b395b; color: #7887a8;
+            background: @center@; border-color: @border@; color: @disabled@;
         }
         QCheckBox { spacing: 8px; padding: 4px 0; }
-        QCheckBox:focus { color: #c7d2fe; }
-        QSplitter::handle { background: #11182c; }
-        QSplitter::handle:hover { background: #405179; }
-        QScrollBar:vertical { background: #11182c; width: 12px; }
-        QScrollBar:horizontal { background: #11182c; height: 12px; }
-        QScrollBar::handle { background: #405179; border-radius: 4px; }
+        QCheckBox:focus { color: @accent@; }
+        QSplitter::handle { background: @background@; }
+        QSplitter::handle:hover { background: @border@; }
+        QScrollBar:vertical { background: @left@; width: 12px; }
+        QScrollBar:horizontal { background: @left@; height: 12px; }
+        QScrollBar::handle { background: @border@; border-radius: 4px; }
         QScrollBar::handle:vertical { min-height: 24px; }
         QScrollBar::handle:horizontal { min-width: 24px; }
-        QScrollBar::handle:hover { background: #6475a5; }
+        QScrollBar::handle:hover { background: @muted@; }
         QScrollBar::add-line, QScrollBar::sub-line { width: 0; height: 0; }
         QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
-        QToolTip { background: #263454; color: #e8edff; border: 1px solid #53658f; }
-    """.replace("@RESOURCES@", resources))
+        QToolTip { background: @control@; color: @text@; border: 1px solid @border@; }
+    """
+    for token, color in COLORS.items():
+        styles = styles.replace(f'@{token}@', color)
+    resources = (Path(__file__).resolve().parent / 'resources').as_posix()
+    app.setStyleSheet(styles.replace('@RESOURCES@', resources))

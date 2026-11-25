@@ -18,7 +18,9 @@ No account, server, API key, or Photoshop installation is required. The interfac
 - **Control sheet size:** automatic sizing by default, with optional manual width and height.
 - **Set spacing** between images in pixels.
 - **Preview the sheet and XML** as the image list or settings change.
-- **Work in a dark navy and indigo interface** with light text and highlighted controls.
+- **Work in a Frosted Navy / Winter Slate interface** with distinct panels, muted ice-blue accents, and grouped Layout, Canvas, and Output settings.
+- **Inspect transparency** on Checkerboard (default), Dark Slate, or Light Slate preview backgrounds. Checkerboard tiles can be 8, 16, or 32 screen pixels.
+- **Copy XML** to the clipboard from the XML Output panel, with subtle syntax highlighting.
 - **Export PNG + XML together**, with original image dimensions and transparency preserved.
 - **Name sprites automatically** from filenames without extensions, adding numbers for duplicates.
 - **See validation errors** in red below Generate. Successful export displays `well seamed!`.
@@ -101,6 +103,8 @@ spritesheet.xml
 ```
 
 If either output file already exists, the application asks before overwriting it. Original source images are not modified.
+
+Use **Background** above Sheet Preview to switch between Checkerboard, Dark Slate, and Light Slate. **Tile** adjusts checkerboard squares independently of image zoom. These backgrounds appear only in the preview: exported PNG transparency and XML coordinates are unchanged. **Copy XML** copies exactly the text in XML Output and becomes available when valid XML is generated.
 
 ### Layouts
 
@@ -188,11 +192,13 @@ assets/
 canned_beer/
   __init__.py
   app.py              Desktop UI, preview, image composition, and export
-  theme.py            Navy and indigo widget palette and styles
+  theme.py            Frosted Navy / Winter Slate palette and styles
+  widgets.py          Preview backgrounds, image list delegate, XML highlighting
   core.py             Sprite naming, packing, and XML generation
   resources/cbs.png   Bundled application window icon
 tests/
   test_core.py        Naming, layout bounds, spacing, overflow, and XML tests
+  test_ui.py          Preview/export separation, clipboard, import and list regression tests
 pyproject.toml        Python package metadata and dependencies
 pysidedeploy.spec     Alternative pyside6-deploy configuration
 scripts/build.py     Native build, startup check, and release packaging
@@ -210,13 +216,13 @@ Report bugs or suggest improvements through [GitHub Issues](https://github.com/S
 
 For code changes, fork the repository, create a branch, make a focused change, and open a pull request with a description and verification results.
 
-Run the core tests from the repository root:
+Run the tests from the repository root (requires the installed PySide6 dependency):
 
 ```sh
 python -m unittest discover -s tests -v
 ```
 
-These tests cover naming collisions, layout bounds and spacing, oversized inputs, and XML attributes. They do not replace testing the packaged app on each target OS.
+These tests cover naming collisions, layout bounds and spacing, oversized inputs, XML attributes, preview-only backgrounds, unchanged transparent PNG/XML exports, clipboard contents, and image-list operations. UI tests use Qt's offscreen platform. They do not replace testing the packaged app on each target OS.
 
 ## 7. Author & Contact
 
