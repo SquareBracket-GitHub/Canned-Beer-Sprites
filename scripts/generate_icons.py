@@ -2,8 +2,8 @@
 from pathlib import Path
 import struct
 
-from PySide6.QtCore import QByteArray, QBuffer, QIODevice, Qt
-from PySide6.QtGui import QImage
+from PySide6.QtCore import QByteArray, QBuffer, QIODevice, QRectF, Qt
+from PySide6.QtGui import QColor, QImage, QPainter
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -14,7 +14,18 @@ def main():
         raise SystemExit("assets/cbs.png must be a readable square image.")
 
     def png(size):
-        scaled = source.scaled(size, size, Qt.AspectRatioMode.KeepAspectRatio,
+        # Supersampling keeps the rounded white tile smooth at small sizes.
+        canvas = QImage(1024, 1024, QImage.Format.Format_ARGB32_Premultiplied)
+        canvas.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(canvas)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.setBrush(QColor("#ffffff"))
+        painter.drawRoundedRect(QRectF(32, 32, 960, 960), 192, 192)
+        painter.drawImage(QRectF(80, 80, 864, 864), source)
+        painter.end()
+        scaled = canvas.scaled(size, size, Qt.AspectRatioMode.KeepAspectRatio,
                                Qt.TransformationMode.SmoothTransformation)
         data = QByteArray()
         buffer = QBuffer(data)

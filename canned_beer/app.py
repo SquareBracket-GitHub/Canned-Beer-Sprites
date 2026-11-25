@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QPushButton, QPlainTextEdit, QSpinBox, QSplitter, QVBoxLayout, QWidget,
 )
 from canned_beer.core import Sprite, layout, xml_text
+from canned_beer.theme import apply_theme
 
 
 class Window(QMainWindow):
@@ -28,7 +29,9 @@ class Window(QMainWindow):
         self.setCentralWidget(split)
         left = QWidget()
         lv = QVBoxLayout(left)
-        lv.addWidget(QLabel("Images"))
+        images_heading = QLabel("Images")
+        images_heading.setObjectName("sectionHeading")
+        lv.addWidget(images_heading)
         buttons = QHBoxLayout()
         for title, action in [("Add files", self.add_files), ("Add folder", self.add_folder)]:
             button = QPushButton(title)
@@ -46,14 +49,16 @@ class Window(QMainWindow):
         split.addWidget(left)
         center = QWidget()
         cv = QVBoxLayout(center)
-        cv.addWidget(QLabel("Sheet Preview"))
+        preview_heading = QLabel("Sheet Preview")
+        preview_heading.setObjectName("sectionHeading")
+        cv.addWidget(preview_heading)
         self.scene = QGraphicsScene(self)
         self.view = QGraphicsView(self.scene)
-        self.view.setBackgroundBrush(QColor("#34383d"))
+        self.view.setBackgroundBrush(QColor("#0b1120"))
         empty_layout = QVBoxLayout(self.view.viewport())
         self.empty_hint = QLabel("Drop files or folders here")
         self.empty_hint.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.empty_hint.setStyleSheet("color: #b8bcc2; background: transparent;")
+        self.empty_hint.setStyleSheet("color: #9aa9c9; background: transparent;")
         self.empty_hint.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         empty_layout.addWidget(self.empty_hint)
         cv.addWidget(self.view, 3)
@@ -80,11 +85,12 @@ class Window(QMainWindow):
         self.name = QLineEdit("spritesheet")
         form.addRow("Output name", self.name)
         self.export_button = QPushButton("Generate")
+        self.export_button.setObjectName("generateButton")
         self.export_button.clicked.connect(self.export)
         form.addRow(self.export_button)
         self.warning = QLabel()
         self.warning.setWordWrap(True)
-        self.warning.setStyleSheet("color: #e53935;")
+        self.warning.setStyleSheet("color: #ff9eae;")
         self.warning.hide()
         form.addRow(self.warning)
         split.addWidget(right)
@@ -250,6 +256,7 @@ def main():
             "SquareBracket.CannedBeerSprites")
     app = QApplication(sys.argv)
     app.setApplicationName("canned beer sprites")
+    apply_theme(app)
     icon = QIcon(str(Path(__file__).resolve().parent / "resources" / "cbs.png"))
     if icon.isNull():
         raise RuntimeError("Application icon is missing or unreadable.")

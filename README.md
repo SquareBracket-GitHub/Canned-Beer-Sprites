@@ -18,9 +18,11 @@ No account, server, API key, or Photoshop installation is required. The interfac
 - **Control sheet size:** automatic sizing by default, with optional manual width and height.
 - **Set spacing** between images in pixels.
 - **Preview the sheet and XML** as the image list or settings change.
+- **Work in a dark navy and indigo interface** with light text and highlighted controls.
 - **Export PNG + XML together**, with original image dimensions and transparency preserved.
 - **Name sprites automatically** from filenames without extensions, adding numbers for duplicates.
 - **See validation errors** in red below Generate. Successful export displays `well seamed!`.
+- **Recognize the app icon** by its original can logo on a rounded white tile.
 
 ## 2. Tech Stack
 
@@ -186,6 +188,7 @@ assets/
 canned_beer/
   __init__.py
   app.py              Desktop UI, preview, image composition, and export
+  theme.py            Navy and indigo widget palette and styles
   core.py             Sprite naming, packing, and XML generation
   resources/cbs.png   Bundled application window icon
 tests/
