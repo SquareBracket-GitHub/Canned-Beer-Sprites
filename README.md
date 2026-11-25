@@ -30,9 +30,9 @@ No account, server, API key, or Photoshop installation is required.
 Download the build for your computer from [Releases](https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/latest). Python is included; no development environment or separate runtime installation is required.
 
 <p align="center">
-  <a href="https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0.0/canned-beer-sprites-v1.0.0-windows-x64.exe"><img src="https://img.shields.io/badge/Windows-x64%20EXE-34495E?style=flat-square&amp;labelColor=202D40" alt="Download Windows x64 EXE"></a>
-  <a href="https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0.0/canned-beer-sprites-v1.0.0-macos-arm64.zip"><img src="https://img.shields.io/badge/macOS-Apple%20Silicon%20ZIP-34495E?style=flat-square&amp;labelColor=202D40" alt="Download macOS Apple Silicon ZIP"></a>
-  <a href="https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.0.0/canned-beer-sprites-v1.0.0-macos-x64.zip"><img src="https://img.shields.io/badge/macOS-Intel%20ZIP-34495E?style=flat-square&amp;labelColor=202D40" alt="Download macOS Intel ZIP"></a>
+  <a href="https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.1.0/canned-beer-sprites-v1.1.0-windows-x64.exe"><img src="https://img.shields.io/badge/Windows-x64%20EXE-34495E?style=flat-square&amp;labelColor=202D40" alt="Download Windows x64 EXE"></a>
+  <a href="https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.1.0/canned-beer-sprites-v1.1.0-macos-arm64.zip"><img src="https://img.shields.io/badge/macOS-Apple%20Silicon%20ZIP-34495E?style=flat-square&amp;labelColor=202D40" alt="Download macOS Apple Silicon ZIP"></a>
+  <a href="https://github.com/SquareBracket-GitHub/Canned-Beer-Sprites/releases/download/v1.1.0/canned-beer-sprites-v1.1.0-macos-x64.zip"><img src="https://img.shields.io/badge/macOS-Intel%20ZIP-34495E?style=flat-square&amp;labelColor=202D40" alt="Download macOS Intel ZIP"></a>
 </p>
 
 

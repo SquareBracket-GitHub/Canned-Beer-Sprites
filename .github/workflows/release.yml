@@ -64,9 +64,9 @@ jobs:
 
           | Your computer | Download |
           | --- | --- |
-          | Windows 64-bit (Intel / AMD) | `canned-beer-sprites-v1.0.0-windows-x64.exe` |
-          | Mac with Apple Silicon (M1 and newer) | `canned-beer-sprites-v1.0.0-macos-arm64.zip` |
-          | Mac with Intel processor | `canned-beer-sprites-v1.0.0-macos-x64.zip` |
+          | Windows 64-bit (Intel / AMD) | `canned-beer-sprites-v1.1.0-windows-x64.exe` |
+          | Mac with Apple Silicon (M1 and newer) | `canned-beer-sprites-v1.1.0-macos-arm64.zip` |
+          | Mac with Intel processor | `canned-beer-sprites-v1.1.0-macos-x64.zip` |
 
           **Windows:** download the exe and run it. No installer is required.
           **macOS:** extract the zip, move the app to Applications, and open it. Mac builds use ad-hoc signing and are not Developer ID signed or notarized. If macOS blocks the first launch, use System Settings > Privacy & Security > Open Anyway for this downloaded app. Windows may also show an unknown publisher warning because the exe has no publisher certificate.

@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 
 
 def main():
@@ -42,7 +42,7 @@ def main():
     subprocess.run(args, check=True, env=env)
     if sys.platform == "win32":
         executable = out / "canned-beer-sprites.exe"
-        artifact = release / "canned-beer-sprites-v1.0.0-windows-x64.exe"
+        artifact = release / "canned-beer-sprites-v1.1.0-windows-x64.exe"
         shutil.copy2(executable, artifact)
         executable = artifact
     else:
@@ -53,7 +53,7 @@ def main():
         info = plistlib.loads((bundle / "Contents/Info.plist").read_bytes())
         executable = bundle / "Contents/MacOS" / info["CFBundleExecutable"]
         arch = "arm64" if platform.machine() == "arm64" else "x64"
-        artifact = release / f"canned-beer-sprites-v1.0.0-macos-{arch}.zip"
+        artifact = release / f"canned-beer-sprites-v1.1.0-macos-{arch}.zip"
     # Run the bundled application outside the source tree without PYTHONPATH.
     smoke_env = dict(os.environ, QT_QPA_PLATFORM="offscreen")
     smoke_env.pop("PYTHONPATH", None)
