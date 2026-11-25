@@ -1,5 +1,9 @@
 # canned beer sprites
 
+<p align="center">
+  <img src="assets/cbs.png" alt="canned beer sprites can logo" width="240" height="240">
+</p>
+
 Pack your images into a sprite sheet and export the coordinates as XML.
 
 **canned beer sprites** is a local desktop tool for preparing game sprites, animation frames, icons, and other image assets. Add your files, choose a layout, preview the result, and click **Generate** to save a transparent PNG and its matching XML file.
@@ -168,20 +172,28 @@ No separate `main.py` is needed: `canned_beer/app.py` is the entry point. The sc
 
 Windows onefile packaging extracts its bundled dependencies to a temporary directory at startup. macOS uses an application bundle, which Finder presents as one app.
 
+The window icon and native Windows/macOS application icons use the logo in `assets/cbs.png`. To regenerate the icons after replacing the logo, run `python scripts/generate_icons.py` before building. This uses the existing PySide6 dependency. The alternative `pysidedeploy.spec` defaults to the Windows icon; set its `icon` to `assets/cbs.icns` when using it on macOS.
+
 The GitHub Actions **Build release** workflow builds Windows x64, macOS arm64, and macOS x64. It can be run manually for validation. Pushing a version tag publishes a release only after every platform build and startup check succeeds.
 
 ## 5. Project Structure
 
 ```text
+assets/
+  cbs.png             Original project logo
+  cbs.ico             Windows icon (16–256 px)
+  cbs.icns            macOS icon (16–1024 px)
 canned_beer/
   __init__.py
   app.py              Desktop UI, preview, image composition, and export
   core.py             Sprite naming, packing, and XML generation
+  resources/cbs.png   Bundled application window icon
 tests/
   test_core.py        Naming, layout bounds, spacing, overflow, and XML tests
 pyproject.toml        Python package metadata and dependencies
 pysidedeploy.spec     Alternative pyside6-deploy configuration
 scripts/build.py     Native build, startup check, and release packaging
+scripts/generate_icons.py  Regenerate native icons from the original logo
 .github/workflows/
   release.yml        Cross-platform build and GitHub Release publishing
 README.md

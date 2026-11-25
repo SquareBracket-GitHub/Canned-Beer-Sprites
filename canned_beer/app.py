@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
+from PySide6.QtGui import QColor, QIcon, QImage, QPainter, QPixmap
 from PySide6.QtWidgets import (
     QApplication, QAbstractItemView, QCheckBox, QComboBox, QFileDialog,
     QFormLayout, QGraphicsScene, QGraphicsView, QHBoxLayout, QLabel,
@@ -244,8 +244,16 @@ class Window(QMainWindow):
 
 
 def main():
+    if sys.platform == "win32":
+        import ctypes
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
+            "SquareBracket.CannedBeerSprites")
     app = QApplication(sys.argv)
     app.setApplicationName("canned beer sprites")
+    icon = QIcon(str(Path(__file__).resolve().parent / "resources" / "cbs.png"))
+    if icon.isNull():
+        raise RuntimeError("Application icon is missing or unreadable.")
+    app.setWindowIcon(icon)
     window = Window()
     window.show()
     if "--smoke-test" in sys.argv:

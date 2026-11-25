@@ -4,7 +4,7 @@ project_dir = .
 input_file = canned_beer/app.py
 exec_directory = dist
 project_file = 
-icon = 
+icon = assets/cbs.ico
 
 [python]
 packages = Nuitka==4.1.1
@@ -36,7 +36,7 @@ header_search_paths =
 [nuitka]
 macos.permissions = 
 mode = standalone
-extra_args = --quiet --noinclude-qt-translations
+extra_args = --quiet --noinclude-qt-translations --include-package-data=canned_beer
 
 [buildozer]
 mode = debug

@@ -14,3 +14,6 @@ canned-beer = "canned_beer.app:main"
 
 [tool.setuptools.packages.find]
 include = ["canned_beer*"]
+
+[tool.setuptools.package-data]
+canned_beer = ["resources/*.png"]

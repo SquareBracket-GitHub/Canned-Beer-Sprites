@@ -22,18 +22,21 @@ def main():
     release.mkdir(parents=True, exist_ok=True)
     args = [sys.executable, "-m", "nuitka", "canned_beer/app.py",
             "--enable-plugin=pyside6", "--include-package=canned_beer",
+            "--include-package-data=canned_beer",
             "--assume-yes-for-downloads", "--noinclude-qt-translations",
             f"--output-dir={out}", "--output-filename=canned-beer-sprites",
             "--jobs=3"]
     if sys.platform == "win32":
         args += ["--onefile", "--windows-console-mode=disable", "--msvc=latest",
                  f"--product-version={VERSION}", f"--file-version={VERSION}",
-                 "--product-name=canned beer sprites"]
+                 "--product-name=canned beer sprites",
+                 f"--windows-icon-from-ico={ROOT / 'assets' / 'cbs.ico'}"]
     else:
         args += ["--standalone", "--macos-create-app-bundle",
                  "--macos-app-name=canned beer sprites",
                  "--macos-signed-app-name=com.squarebracket.cannedbeersprites",
-                 f"--macos-app-version={VERSION}"]
+                 f"--macos-app-version={VERSION}",
+                 f"--macos-app-icon={ROOT / 'assets' / 'cbs.icns'}"]
     env = dict(os.environ)
     env["PYTHONPATH"] = str(ROOT)
     subprocess.run(args, check=True, env=env)
