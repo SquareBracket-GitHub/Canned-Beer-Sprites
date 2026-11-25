@@ -2,6 +2,8 @@
 import os
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 from PySide6.QtCore import Qt
@@ -48,6 +50,19 @@ class UiTests(unittest.TestCase):
             self.window.preview_background.setCurrentText(mode)
             image = view.viewport().grab().toImage()
             self.assertEqual(image.pixelColor(2, 2).name().lower(), COLORS[token].lower())
+
+    def test_startup_when_entry_point_is_outside_package(self):
+        # Nuitka places the entry point at the bundle root, away from package data.
+        script = (
+            "import sys; import canned_beer.app as app; "
+            "app.__file__ = 'app.py'; "
+            "sys.argv = ['app.py', '--smoke-test']; app.main()"
+        )
+        env = dict(os.environ, QT_QPA_PLATFORM='offscreen')
+        env['PYTHONPATH'] = str(Path(__file__).resolve().parents[1])
+        result = subprocess.run([sys.executable, '-c', script], cwd=self.root,
+                                env=env, capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_preview_modes_do_not_change_exported_png_or_xml(self):
         window = self.window

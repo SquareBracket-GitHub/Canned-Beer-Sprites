@@ -3,6 +3,8 @@ from pathlib import Path
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QPalette
 
+RESOURCE_DIR = Path(__file__).resolve().parent / 'resources'
+
 COLORS = {
     'background': '#111927', 'left': '#151F2E', 'center': '#192536',
     'xml': '#101827', 'control': '#202D40', 'border': '#34445A',
@@ -111,5 +113,5 @@ def apply_theme(app):
     """
     for token, color in COLORS.items():
         styles = styles.replace(f'@{token}@', color)
-    resources = (Path(__file__).resolve().parent / 'resources').as_posix()
+    resources = RESOURCE_DIR.as_posix()
     app.setStyleSheet(styles.replace('@RESOURCES@', resources))

@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QPushButton, QPlainTextEdit, QSpinBox, QSplitter, QVBoxLayout, QWidget,
 )
 from canned_beer.core import Sprite, layout, xml_text
-from canned_beer.theme import apply_theme
+from canned_beer.theme import RESOURCE_DIR, apply_theme
 from canned_beer.widgets import ImageDelegate, PreviewView, XmlHighlighter
 
 
@@ -345,7 +345,7 @@ def main():
     app = QApplication(sys.argv)
     app.setApplicationName("canned beer sprites")
     apply_theme(app)
-    icon = QIcon(str(Path(__file__).resolve().parent / "resources" / "cbs.png"))
+    icon = QIcon(str(RESOURCE_DIR / "cbs.png"))
     if icon.isNull():
         raise RuntimeError("Application icon is missing or unreadable.")
     app.setWindowIcon(icon)
