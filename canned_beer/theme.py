@@ -46,17 +46,17 @@ def apply_theme(app):
         }
         QGroupBox::title { subcontrol-origin: margin; left: 0; color: @accent@; }
         QListWidget, QPlainTextEdit, QGraphicsView {
-            border: 1px solid @border@; border-radius: 6px;
+            border: 1px solid @border@; border-radius: 0px;
             selection-background-color: @selected@; selection-color: @text@;
         }
         QListWidget { background: @left@; padding: 4px; }
-        QListWidget::item { border-radius: 4px; }
+        QListWidget::item { border-radius: 0px; }
         QListWidget::item:hover { background: @hover@; }
         QListWidget::item:selected { background: @selected@; }
         QPlainTextEdit { background: @xml@; padding: 10px; font-family: Consolas, monospace; }
         QLineEdit, QSpinBox, QComboBox {
             background: @control@; color: @text@;
-            border: 1px solid @border@; border-radius: 5px;
+            border: 1px solid @border@; border-radius: 0px;
             padding: 6px; min-height: 20px;
             selection-background-color: @selected@;
         }
@@ -81,7 +81,7 @@ def apply_theme(app):
         QComboBox::down-arrow { image: url("@RESOURCES@/chevron-down.svg"); width: 10px; height: 6px; }
         QPushButton {
             background: @control@; color: @text@; border: 1px solid @border@;
-            border-radius: 5px; padding: 8px 10px; min-height: 18px;
+            border-radius: 0px; padding: 8px 10px; min-height: 18px;
         }
         QPushButton:hover { background: @hover@; border-color: @muted@; }
         QPushButton:pressed { background: @selected@; }
@@ -101,7 +101,7 @@ def apply_theme(app):
         QSplitter::handle:hover { background: @border@; }
         QScrollBar:vertical { background: @left@; width: 12px; }
         QScrollBar:horizontal { background: @left@; height: 12px; }
-        QScrollBar::handle { background: @border@; border-radius: 4px; }
+        QScrollBar::handle { background: @border@; border-radius: 0px; }
         QScrollBar::handle:vertical { min-height: 24px; }
         QScrollBar::handle:horizontal { min-width: 24px; }
         QScrollBar::handle:hover { background: @muted@; }

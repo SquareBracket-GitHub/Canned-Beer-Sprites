@@ -92,7 +92,7 @@ class Window(QMainWindow):
         empty_layout = QVBoxLayout(self.view.viewport())
         self.empty_hint = QLabel("Drop files or folders here")
         self.empty_hint.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.empty_hint.setStyleSheet("color: #E1E8F0; background: #192536; padding: 10px; border-radius: 5px;")
+        self.empty_hint.setStyleSheet("color: #E1E8F0; background: #192536; padding: 10px; border-radius: 0px;")
         self.empty_hint.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         empty_layout.addStretch()
         empty_layout.addWidget(self.empty_hint, 0, Qt.AlignmentFlag.AlignCenter)

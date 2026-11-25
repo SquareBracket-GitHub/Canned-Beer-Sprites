@@ -18,7 +18,7 @@ No account, server, API key, or Photoshop installation is required. The interfac
 - **Control sheet size:** automatic sizing by default, with optional manual width and height.
 - **Set spacing** between images in pixels.
 - **Preview the sheet and XML** as the image list or settings change.
-- **Work in a Frosted Navy / Winter Slate interface** with distinct panels, muted ice-blue accents, and grouped Layout, Canvas, and Output settings.
+- **Work in a Frosted Navy / Winter Slate interface** with distinct panels, muted ice-blue accents, square-cornered controls, and grouped Layout, Canvas, and Output settings.
 - **Inspect transparency** on Checkerboard (default), Dark Slate, or Light Slate preview backgrounds. Checkerboard tiles can be 8, 16, or 32 screen pixels.
 - **Copy XML** to the clipboard from the XML Output panel, with subtle syntax highlighting.
 - **Export PNG + XML together**, with original image dimensions and transparency preserved.
