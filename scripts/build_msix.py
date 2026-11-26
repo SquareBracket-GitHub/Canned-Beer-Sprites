@@ -44,7 +44,7 @@ def create_manifest(version, identity_name, publisher, publisher_display_name, p
         raise ValueError('Package identity must contain 3–50 letters, digits, dots or hyphens.')
     if not publisher.startswith('CN=') or not publisher_display_name.strip():
         raise ValueError('Supply the Publisher and PublisherDisplayName from Partner Center.')
-    name = 'canned beer sprites Preview' if preview else 'canned beer sprites'
+    name = 'Canned Beer Sprites Preview' if preview else 'Canned Beer Sprites'
     package = ET.Element(f'{{{FOUNDATION}}}Package', IgnorableNamespaces='uap rescap')
     ET.SubElement(package, f'{{{FOUNDATION}}}Identity', Name=identity_name,
                   Publisher=publisher, Version=version, ProcessorArchitecture='x64')
