@@ -34,6 +34,25 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Build and verify executable
         run: python scripts/build.py
+      - name: Build Microsoft Store submission package
+        if: runner.os == 'Windows' && vars.CBS_STORE_IDENTITY_NAME != ''
+        env:
+          CBS_STORE_IDENTITY_NAME: ${{ vars.CBS_STORE_IDENTITY_NAME }}
+          CBS_STORE_PUBLISHER: ${{ vars.CBS_STORE_PUBLISHER }}
+          CBS_STORE_PUBLISHER_DISPLAY_NAME: ${{ vars.CBS_STORE_PUBLISHER_DISPLAY_NAME }}
+        run: >-
+          python -c "import os; from pathlib import Path; from scripts.build import VERSION;
+          from scripts.build_msix import build_msix;
+          build_msix(Path('dist/release') / f'canned-beer-sprites-v{VERSION}-windows-x64.exe',
+          f'{VERSION}.0', Path('dist/store'), os.environ['CBS_STORE_IDENTITY_NAME'],
+          os.environ['CBS_STORE_PUBLISHER'], os.environ['CBS_STORE_PUBLISHER_DISPLAY_NAME'])"
+      - name: Upload Microsoft Store submission package
+        if: runner.os == 'Windows' && vars.CBS_STORE_IDENTITY_NAME != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: store-submission-windows-x64
+          path: dist/store/*
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: release-${{ matrix.os }}

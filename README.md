@@ -74,6 +74,22 @@ Install [Inno Setup](https://jrsoftware.org/isdl.php), then run `python scripts/
 
 Builds are unsigned by default. For an existing trusted code signing certificate accessible in the Windows user certificate store, set `CBS_SIGN_CERTIFICATE_THUMBPRINT` and `CBS_REQUIRE_SIGNATURE=1` before building. This signs the app, installer, and uninstaller using Windows SDK SignTool and a timestamp. No certificate or private key is stored in the repository. Signing does not guarantee immediate SmartScreen reputation.
 
+### Microsoft Store and GitHub distribution
+
+For GitHub distribution, Windows builds produce the portable app and setup installer. A separate MSIX package can be built for Microsoft Store submission. Store publication and SignPath signing are not configured yet.
+
+After registering the app in Partner Center, copy its **Package/Identity/Name**, **Package/Identity/Publisher**, and **Package/Properties/PublisherDisplayName** into the GitHub Actions repository variables `CBS_STORE_IDENTITY_NAME`, `CBS_STORE_PUBLISHER`, and `CBS_STORE_PUBLISHER_DISPLAY_NAME`. The release workflow then also uploads a separate `store-submission-windows-x64` artifact. This unsigned package is for Partner Center submission; the Store signs it after certification. It is not attached to the public GitHub release and is not directly installable.
+
+To validate MSIX packaging locally before registration, install the Windows SDK and run:
+
+```powershell
+python scripts/build_msix.py --executable dist/release/canned-beer-sprites-v1.1.0-windows-x64.exe --version 1.1.0.0 --preview --output-dir dist/msix-preview
+```
+
+Preview packages use an isolated identity and cannot be submitted to the Store. For a submission package, omit `--preview` and provide `--identity-name`, `--publisher`, and `--publisher-display-name` using the exact Partner Center values. Direct distribution of MSIX outside the Store requires a separately trusted signature with a matching Publisher identity.
+
+Free [SignPath Foundation](https://signpath.org/terms) signing requires an eligible open-source license and project approval. No license is selected for CBS yet, and no SignPath requests or account registrations have been submitted.
+
 ## XML output
 
 ```xml
