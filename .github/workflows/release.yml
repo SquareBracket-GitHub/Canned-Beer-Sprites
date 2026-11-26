@@ -65,10 +65,11 @@ jobs:
           | Your computer | Download |
           | --- | --- |
           | Windows 64-bit (Intel / AMD) | `canned-beer-sprites-v1.1.0-windows-x64.exe` |
+          | Windows installer (x64) | `canned-beer-sprites-v1.1.0-windows-x64-setup.exe` |
           | Mac with Apple Silicon (M1 and newer) | `canned-beer-sprites-v1.1.0-macos-arm64.zip` |
           | Mac with Intel processor | `canned-beer-sprites-v1.1.0-macos-x64.zip` |
 
-          **Windows:** download the exe and run it. No installer is required.
+          **Windows:** use the setup exe to install for your user account, create Start menu and optional desktop shortcuts, and register an uninstaller. The portable exe remains available for running without installation. Windows builds are unsigned unless a trusted code signing identity is configured; packaging alone does not remove SmartScreen warnings.
           **macOS:** extract the zip, move the app to Applications, and open it. Mac builds use ad-hoc signing and are not Developer ID signed or notarized. If macOS blocks the first launch, use System Settings > Privacy & Security > Open Anyway for this downloaded app. Windows may also show an unknown publisher warning because the exe has no publisher certificate.
 
           Features: file/folder import, reordering, Rows / Uniform grid / Compact layouts, automatic or manual sheet dimensions, spacing, live sheet/XML preview, and PNG + XML export. Duplicate names are numbered. Source images retain their dimensions and transparency.

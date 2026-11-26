@@ -59,6 +59,15 @@ def main():
     smoke_env.pop("PYTHONPATH", None)
     subprocess.run([str(executable), "--smoke-test"], cwd=out,
                    env=smoke_env, check=True, timeout=120)
+    if sys.platform == "win32":
+        installer_args = [sys.executable, str(ROOT / 'scripts/build_installer.py'),
+                          '--executable', str(artifact), '--version', VERSION]
+        thumbprint = os.environ.get('CBS_SIGN_CERTIFICATE_THUMBPRINT')
+        if thumbprint:
+            installer_args += ['--certificate-thumbprint', thumbprint]
+        if os.environ.get('CBS_REQUIRE_SIGNATURE') == '1':
+            installer_args.append('--require-signature')
+        subprocess.run(installer_args, check=True)
     if sys.platform == "darwin":
         # ditto preserves executable permissions, symlinks, and bundle metadata.
         subprocess.run(["ditto", "-c", "-k", "--sequesterRsrc", "--keepParent",

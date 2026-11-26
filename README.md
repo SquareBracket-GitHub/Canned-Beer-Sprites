@@ -68,6 +68,12 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m canned_beer.app
 ```
 
+### Build a Windows installer
+
+Install [Inno Setup](https://jrsoftware.org/isdl.php), then run `python scripts/build.py` on Windows. The build produces both the portable exe and a `windows-x64-setup.exe` with a Start menu shortcut, an optional desktop shortcut, and an uninstaller. Installation is for the current user and requires no administrator rights.
+
+Builds are unsigned by default. For an existing trusted code signing certificate accessible in the Windows user certificate store, set `CBS_SIGN_CERTIFICATE_THUMBPRINT` and `CBS_REQUIRE_SIGNATURE=1` before building. This signs the app, installer, and uninstaller using Windows SDK SignTool and a timestamp. No certificate or private key is stored in the repository. Signing does not guarantee immediate SmartScreen reputation.
+
 ## XML output
 
 ```xml
