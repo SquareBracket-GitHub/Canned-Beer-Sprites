@@ -1,7 +1,7 @@
 # canned beer sprites
 
 <p align="center">
-  <img src="canned_beer/resources/cbs.png" alt="canned beer sprites can logo" width="240" height="240">
+  <img src="assets/cbs.png" alt="canned beer sprites can logo" width="240" height="240">
 </p>
 
 <p align="center">
